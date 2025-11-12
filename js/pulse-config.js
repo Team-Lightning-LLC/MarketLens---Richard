@@ -6,7 +6,7 @@ const PULSE_CONFIG = {
   VERTESIA_API_KEY: 'sk-2538a58567e4ebb6654c0a17ceab228c',
   VERTESIA_BASE_URL: 'https://api.vertesia.io/api/v1',
   ENVIRONMENT_ID: '681915c6a01fb262a410c161',
-  MODEL: 'publishers/anthropic/models/claude-3-7-sonnet',
+  MODEL: 'publishers/anthropic/models/claude-sonnet-4',
   
   // Pulse-specific interaction name
   INTERACTION_NAME: 'Pulse',
