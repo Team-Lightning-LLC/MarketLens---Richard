@@ -9,15 +9,18 @@ class PortfolioPulseWidget {
     this.init();
   }
 
-  init() {
+  async init() {
     // Initialize Pulse-specific API wrapper
     this.pulseAPI = new PulseVertesiaAPI();
     
     // Bind UI events
     this.bindUI();
     
-    // Load latest digest on startup
-    this.loadLatestDigest();
+    // Load latest digest on startup and check if we need to generate
+    await this.loadLatestDigest();
+    
+    // Check if digest is from today, if not generate one
+    await this.checkAndGenerateIfNeeded();
     
     // Schedule daily auto-generation
     this.scheduleDigestAt(PULSE_CONFIG.DAILY_GENERATION_TIME);
@@ -40,6 +43,31 @@ class PortfolioPulseWidget {
         article.classList.toggle('expanded');
       }
     });
+  }
+
+  // Check if digest is from today, if not generate new one
+  async checkAndGenerateIfNeeded() {
+    if (!this.digest || !this.digest.created_at) {
+      console.log('[Pulse] No digest found, generating new one');
+      await this.generateDigest();
+      return;
+    }
+
+    const digestDate = new Date(this.digest.created_at);
+    const today = new Date();
+    
+    // Check if digest is from today (same date)
+    const isSameDay = digestDate.getDate() === today.getDate() &&
+                      digestDate.getMonth() === today.getMonth() &&
+                      digestDate.getFullYear() === today.getFullYear();
+    
+    if (!isSameDay) {
+      console.log('[Pulse] Digest is not from today, generating new one');
+      console.log(`[Pulse] Last digest: ${digestDate.toLocaleDateString()}, Today: ${today.toLocaleDateString()}`);
+      await this.generateDigest();
+    } else {
+      console.log('[Pulse] Digest is current, no generation needed');
+    }
   }
 
   // Scheduler for daily auto-generation
@@ -168,8 +196,9 @@ class PortfolioPulseWidget {
 
     } catch (error) {
       console.error('[Pulse] Failed to load digest:', error);
-      this.updateStatus('Error', false);
-      this.showEmpty('Unable to load digest. Click "Generate Digest" to create one.');
+      this.updateStatus('No Digest', false);
+      // Don't show error message - checkAndGenerateIfNeeded will handle generation
+      this.digest = null;
     }
   }
 
