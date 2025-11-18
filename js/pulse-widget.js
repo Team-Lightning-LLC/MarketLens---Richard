@@ -206,78 +206,55 @@ class PortfolioPulseWidget {
       throw error;
     }
   }
+// Upload the watchlist file to Vertesia
+async uploadWatchlistFile(file, name) {
+  try {
+    // Step 1: Get upload URL
+    const uploadUrlResponse = await fetch(`${PULSE_CONFIG.VERTESIA_BASE_URL}/objects/upload-url`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${PULSE_CONFIG.VERTESIA_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        mime_type: file.type || 'application/octet-stream'
+      })
+    });
 
-  // Upload the watchlist file to Vertesia
-  async uploadWatchlistFile(file, name) {
-    try {
-      // Step 1: Get upload URL
-      const uploadUrlResponse = await fetch(`${PULSE_CONFIG.VERTESIA_BASE_URL}/objects/upload-url`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${PULSE_CONFIG.VERTESIA_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          type: file.type || 'application/octet-stream',
-          size: file.size
-        })
-      });
-
-      if (!uploadUrlResponse.ok) {
-        throw new Error(`Failed to get upload URL: ${uploadUrlResponse.statusText}`);
-      }
-
-      const uploadData = await uploadUrlResponse.json();
-
-      // Step 2: Upload file to the signed URL
-      const uploadResponse = await fetch(uploadData.url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': file.type || 'application/octet-stream'
-        },
-        body: file
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error(`Failed to upload file: ${uploadResponse.statusText}`);
-      }
-
-      // Step 3: Confirm upload and create object
-      const confirmResponse = await fetch(`${PULSE_CONFIG.VERTESIA_BASE_URL}/objects`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${PULSE_CONFIG.VERTESIA_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          content: {
-            source: uploadData.source,
-            type: file.type || 'application/octet-stream',
-            size: file.size
-          },
-          properties: {
-            type: 'watchlist',
-            uploaded_at: new Date().toISOString(),
-            original_filename: file.name
-          }
-        })
-      });
-
-      if (!confirmResponse.ok) {
-        throw new Error(`Failed to confirm upload: ${confirmResponse.statusText}`);
-      }
-
-      const createdObject = await confirmResponse.json();
-      console.log('[Pulse] Watchlist uploaded successfully:', createdObject);
-      
-      return createdObject;
-    } catch (error) {
-      console.error('[Pulse] Error uploading watchlist:', error);
-      throw error;
+    if (!uploadUrlResponse.ok) {
+      throw new Error(`Failed to get upload URL: ${uploadUrlResponse.statusText}`);
     }
+
+    const uploadData = await uploadUrlResponse.json();
+    console.log('[Pulse] Upload URL response:', uploadData);
+
+    // Step 2: Upload file to the signed URL
+    const uploadResponse = await fetch(uploadData.url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream'
+      },
+      body: file
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Failed to upload file: ${uploadResponse.statusText}`);
+    }
+
+    console.log('[Pulse] Watchlist uploaded successfully, ID:', uploadData.id);
+    
+    // Return object info for UI display
+    return {
+      id: uploadData.id,
+      name: name,
+      created_at: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('[Pulse] Error uploading watchlist:', error);
+    throw error;
   }
+}
 
   // Show the watchlist display UI
   showWatchlistDisplay(watchlistDoc) {
