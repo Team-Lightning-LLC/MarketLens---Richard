@@ -754,7 +754,7 @@ dialog::backdrop {
 /* Context section */
 #contextInput {
   width: 100%;
-  height: 50px
+  height: 35px
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 10px;
