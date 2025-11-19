@@ -2200,26 +2200,74 @@ dialog::backdrop {
   color: #9ca3af;
   font-style: italic;
 }
-header {
+/* Header Right Side */
+.header-right {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: #172A3A;
+  gap: 16px;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
   color: white;
 }
 
-.logo {
-  display: flex;
-  flex-direction: column;
+.header-user:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.logo-text {
-  font-size: 18px;
+.header-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
   font-weight: 600;
 }
 
-.logo-sub {
-  font-size: 11px;
-  opacity: 0.7;
+.header-user-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.header-help {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.header-help:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.header-logout {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.header-logout:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
 }
