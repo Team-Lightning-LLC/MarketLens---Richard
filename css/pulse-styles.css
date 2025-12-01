@@ -560,7 +560,13 @@
   cursor: not-allowed;
 }
 
-/* Loading Overlay */
+/* Make articles container the positioning context */
+.pulse-articles-container {
+  position: relative;
+  min-height: 200px; /* Ensure there's space for the spinner */
+}
+
+/* Loading Overlay - contained within articles area */
 .pulse-loading-overlay {
   position: absolute;
   top: 0;
@@ -572,22 +578,21 @@
   align-items: center;
   justify-content: center;
   z-index: 10;
-  border-radius: 8px;
 }
 
 .pulse-loading-content {
   text-align: center;
-  padding: 40px;
+  padding: 20px;
 }
 
 .pulse-spinner {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border: 3px solid #e2e8f0;
   border-top-color: #172A3A;
   border-radius: 50%;
   animation: pulse-spin 1s linear infinite;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
 }
 
 @keyframes pulse-spin {
@@ -595,14 +600,14 @@
 }
 
 .pulse-loading-text {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #172A3A;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 }
 
 .pulse-loading-subtext {
-  font-size: 14px;
+  font-size: 12px;
   color: #64748b;
   margin: 0;
 }
